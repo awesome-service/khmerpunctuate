@@ -68,8 +68,12 @@ def punctuate(words, max_length=256):
       y_mask = y_mask + [0 for _ in range(max_length - len(y_mask))]
 
     attn_mask = [1 if token != 1 else 0 for token in x]
+    x = np.array(x)  # Convert to NumPy array
+    x = x.astype(np.int64)
+    attn_mask = np.array(attn_mask)  # Convert to NumPy array
+    attn_mask = attn_mask.astype(np.int64)
     x = np.expand_dims(x, axis=0)
-    attn_mask = np.expand_dims(attn_mask, 0)
+    attn_mask = np.expand_dims(attn_mask, axis=0)
     input_values = {"input_ids": x, "attention_masks": attn_mask}
     logits = session.run(None, input_values)[0]
     outputs = np.argmax(logits, axis=-1).squeeze(0)
